@@ -59,12 +59,12 @@ typedef struct dictEntry {
 
 /* 保存一连串操作特定类型键值对的函数 */
 typedef struct dictType {
-    uint64_t (*hashFunction)(const void *key);//哈希计算方法，返回整型变量         
+    uint64_t (*hashFunction)(const void *key);//哈希计算方法，返回整型变量 dictSdsHash 调用 dictGenHashFunction     
     void *(*keyDup)(void *privdata, const void *key);//复制key
     void *(*valDup)(void *privdata, const void *obj);//复制val
-    int (*keyCompare)(void *privdata, const void *key1, const void *key2);//比较key
-    void (*keyDestructor)(void *privdata, void *key);//析构key
-    void (*valDestructor)(void *privdata, void *obj);//析构val
+    int (*keyCompare)(void *privdata, const void *key1, const void *key2);//比较key dictSdsKeyCompare
+    void (*keyDestructor)(void *privdata, void *key);//析构key redis-cli.c中dictSdsDestructor调用sdsfree实现
+    void (*valDestructor)(void *privdata, void *obj);//析构val dictListDestructor调用listRelease实现
 } dictType;
 
 /* This is our hash table structure. Every dictionary has two of this as we
@@ -148,7 +148,9 @@ typedef void (dictScanBucketFunction)(void *privdata, dictEntry **bucketref);
 #define dictGetSignedIntegerVal(he) ((he)->v.s64)
 #define dictGetUnsignedIntegerVal(he) ((he)->v.u64)
 #define dictGetDoubleVal(he) ((he)->v.d)
+//字典容量？？？
 #define dictSlots(d) ((d)->ht[0].size+(d)->ht[1].size)
+//已用大小
 #define dictSize(d) ((d)->ht[0].used+(d)->ht[1].used)
 #define dictIsRehashing(d) ((d)->rehashidx != -1)
 

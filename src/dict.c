@@ -111,6 +111,7 @@ static void _dictReset(dictht *ht)
 dict *dictCreate(dictType *type,
         void *privDataPtr)
 {
+    //可以这样用？？
     dict *d = zmalloc(sizeof(*d));
 
     _dictInit(d,type,privDataPtr);
@@ -121,6 +122,7 @@ dict *dictCreate(dictType *type,
 int _dictInit(dict *d, dictType *type,
         void *privDataPtr)
 {
+    //&d->ht[0] 等同于 &(d->ht[0]),->优先级高
     _dictReset(&d->ht[0]);
     _dictReset(&d->ht[1]);
     d->type = type;

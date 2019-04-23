@@ -417,6 +417,11 @@ static int dictSdsKeyCompare(void *privdata, const void *key1,
     l1 = sdslen((sds)key1);
     l2 = sdslen((sds)key2);
     if (l1 != l2) return 0;
+    /*比较key1和key2的前l1个字节
+      key1 < key2 返回值<0
+      key1 = key2 返回值=0
+      key1 > key2 返回值大于0
+    */
     return memcmp(key1, key2, l1) == 0;
 }
 
